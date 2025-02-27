@@ -2,13 +2,11 @@
 package ubc.cosc322;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 import ygraph.ai.smartfox.games.BaseGameGUI;
 import ygraph.ai.smartfox.games.GameClient;
 import ygraph.ai.smartfox.games.GamePlayer;
-import ygraph.ai.smartfox.games.amazons.HumanPlayer;
 
 /**
  * An example illustrating how to implement a GamePlayer
@@ -77,11 +75,6 @@ public class COSC322Test extends GamePlayer{
 		}
 
 		gameClient.joinRoom("Bear Lake");
-
-	
-
-		// gameClient.sendMoveMessage(x, queenPosNew, arrowPos);
-
     }
 
     @Override
@@ -91,28 +84,30 @@ public class COSC322Test extends GamePlayer{
 		System.out.println("MSG RXD: " + messageType);
 
 		if(messageType.equals("cosc322.game-state.board")) {
-			System.out.println("Board: " + msgDetails.get("game-state"));
-
+			System.out.println("RXD Board: " + msgDetails.get("game-state"));
 			gamegui.setGameState((ArrayList<Integer>) msgDetails.get("game-state"));
-			ArrayList<Integer> t1 = new ArrayList<>(Arrays.asList(7, 1));
-			ArrayList<Integer> t2 = new ArrayList<>(Arrays.asList(9, 3));
-			ArrayList<Integer> t3 = new ArrayList<>(Arrays.asList(2, 10));
 
 
-			gameClient.sendMoveMessage(t1, t2, t3);
+
+
+			// ArrayList<Integer> t1 = new ArrayList<>(Arrays.asList(7, 1));
+			// ArrayList<Integer> t2 = new ArrayList<>(Arrays.asList(9, 3));
+			// ArrayList<Integer> t3 = new ArrayList<>(Arrays.asList(2, 10));
+			
+			// gameClient.sendMoveMessage(t1, t2, t3);
 		} else if (messageType.equals("cosc322.game-action.move")) {
 			System.out.println("RXD Move Msg: " + msgDetails);
 
 
-			ArrayList<Integer> test1 =(ArrayList<Integer>) msgDetails.get("queen-position-current");
-			ArrayList<Integer> test2 =(ArrayList<Integer>) msgDetails.get("queen-position-next");
-			ArrayList<Integer> test3 =(ArrayList<Integer>) msgDetails.get("arrow-position");
+			// ArrayList<Integer> test1 =(ArrayList<Integer>) msgDetails.get("queen-position-current");
+			// ArrayList<Integer> test2 =(ArrayList<Integer>) msgDetails.get("queen-position-next");
+			// ArrayList<Integer> test3 =(ArrayList<Integer>) msgDetails.get("arrow-position");
 
-			System.out.println(test1.toString());
-			System.out.println(test1.get(0));
+			// System.out.println(test1.toString());
+			// System.out.println(test1.get(0));
 
-			System.out.println("UPDATING");
-			gamegui.updateGameState(test1, test2, test3);
+			// System.out.println("UPDATING");
+			// gamegui.updateGameState(test1, test2, test3);
 		
 
 
@@ -122,22 +117,6 @@ public class COSC322Test extends GamePlayer{
 
     	//For a detailed description of the message types and format, 
     	//see the method GamePlayer.handleGameMessage() in the game-client-api document. 
-    	
-		/*
-		 * 
-		 * [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		 *  0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0,
-		 *  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		 *  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		 *  0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2,
-		 *  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		 *  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		 *  0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-		 *  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		 *  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		 *  0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0]
-		 * 
-		 */
     	return true;   	
     }
     

@@ -7,7 +7,7 @@ import java.util.Map;
 public class SmartPlayer {
     
     private ArrayList<Integer> gameboard;
-
+    private Integer playerNum;
     public SmartPlayer() {
 
 
@@ -19,25 +19,62 @@ public class SmartPlayer {
         ArrayList<Integer> nextPos = gameMove.get("queen-position-next");
         ArrayList<Integer> arrowPos = gameMove.get("arrow-position");
         
+        //Check if move lands in a occupied space:
+        if(this.gameboard.get(this.convertLocToBoard(nextPos)) != 0) {
+            System.err.println("Move invalid, player move occupied. validateMove() - SmartPlayer.java");
+            return false;
+        }
 
+        //Check if move is within bounds:
+        if(nextPos.get(0) <= 0 || nextPos.get(0) >= 11 || nextPos.get(1) >= 11 || nextPos.get(1) <= 0) {
+            System.err.println("Move out of bounds index <=0 or >=11. validateMove() - SmartPlayer.java");
+            return false;
+        }
+        
+        //Check if arrow lands in occupied space:
+        if(this.gameboard.get(this.convertLocToBoard(arrowPos)) != 0) {
+            System.err.println("Move invalid, arrow shot occupied. validateMove() - SmartPlayer.java");
+            return false;
+        }
 
+        //Check that move is horizontal or vertical.
+        //First I check for horizontal move:
 
+        
 
 
         
 
         return true;
     }
+
     
-    public void updateGameboard(Map<String, ArrayList<Integer>> gameMove, int playerNum) {
+    public void updateGameboard(Map<String, ArrayList<Integer>> gameMove) {
         ArrayList<Integer> currentPos = gameMove.get("queen-position-current");
         ArrayList<Integer> nextPos = gameMove.get("queen-position-next");
         ArrayList<Integer> arrowPos = gameMove.get("arrow-position");
         
-        this.gameboard.set(this.convertLocToBoard(currentPos), 0);
-        this.gameboard.set(this.convertLocToBoard(nextPos), playerNum);
-        this.gameboard.set(this.convertLocToBoard(arrowPos), 3);
+    
+        setBoardPosition(currentPos, 0);
+        setBoardPosition(nextPos, this.playerNum);
+        setBoardPosition(arrowPos, 3); //SHOULD THIS BE 3?
 
+    }
+
+    private boolean setBoardPosition(ArrayList<Integer> move, Integer value) { //Helper function to update single positions.
+        this.gameboard.set(this.convertLocToBoard(move), value);
+        return true;
+    }
+
+    private Integer getBoardPosition(ArrayList<Integer> position) { //Helper function. Returns value at location. Ex [7,1]=1
+        return this.gameboard.get(this.convertLocToBoard(position));
+    }
+
+    private Integer getBoardPosition(int x, int y) {
+        ArrayList<Integer> position = new ArrayList<>();
+        position.add(x);
+        position.add(y);
+        return getBoardPosition(position);
     }
 
     private Integer convertLocToBoard(ArrayList<Integer> loc) {
