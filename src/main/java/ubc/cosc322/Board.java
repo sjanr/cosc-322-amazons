@@ -2,25 +2,29 @@ package ubc.cosc322;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
-public class SmartPlayer {
+public class Board {
     
     private ArrayList<Integer> gameboard;
-    private Integer playerNum;
-    public SmartPlayer() {
 
+    public Board() {
+    } 
 
-
+    public Board(ArrayList<Integer> gameboard) {
+        this.gameboard = gameboard;
     }
     
+
+    //*INCOMPLETE*/
     public boolean validateMove(Map<String, ArrayList<Integer>> gameMove) {
         ArrayList<Integer> currentPos = gameMove.get("queen-position-current");
         ArrayList<Integer> nextPos = gameMove.get("queen-position-next");
         ArrayList<Integer> arrowPos = gameMove.get("arrow-position");
         
         //Check if move lands in a occupied space:
-        if(this.gameboard.get(this.convertLocToBoard(nextPos)) != 0) {
+        if(this.gameboard.get(this.convertXYToBoard(nextPos)) != 0) {
             System.err.println("Move invalid, player move occupied. validateMove() - SmartPlayer.java");
             return false;
         }
@@ -32,7 +36,7 @@ public class SmartPlayer {
         }
         
         //Check if arrow lands in occupied space:
-        if(this.gameboard.get(this.convertLocToBoard(arrowPos)) != 0) {
+        if(this.gameboard.get(this.convertXYToBoard(arrowPos)) != 0) {
             System.err.println("Move invalid, arrow shot occupied. validateMove() - SmartPlayer.java");
             return false;
         }
@@ -49,35 +53,41 @@ public class SmartPlayer {
     }
 
     
-    public void updateGameboard(Map<String, ArrayList<Integer>> gameMove) {
+    /*INCOMPLETE*/
+    public void updateGameboard(Map<String, ArrayList<Integer>> gameMove, int playerNum) {
         ArrayList<Integer> currentPos = gameMove.get("queen-position-current");
         ArrayList<Integer> nextPos = gameMove.get("queen-position-next");
         ArrayList<Integer> arrowPos = gameMove.get("arrow-position");
         
     
         setBoardPosition(currentPos, 0);
-        setBoardPosition(nextPos, this.playerNum);
+        setBoardPosition(nextPos, playerNum);
         setBoardPosition(arrowPos, 3); //SHOULD THIS BE 3?
 
     }
 
-    private boolean setBoardPosition(ArrayList<Integer> move, Integer value) { //Helper function to update single positions.
-        this.gameboard.set(this.convertLocToBoard(move), value);
+    public boolean setBoardPosition(ArrayList<Integer> move, Integer value) { //Helper function to update single positions.
+        this.gameboard.set(this.convertXYToBoard(move), value);
         return true;
     }
 
-    private Integer getBoardPosition(ArrayList<Integer> position) { //Helper function. Returns value at location. Ex [7,1]=1
-        return this.gameboard.get(this.convertLocToBoard(position));
+    public Integer getBoardPosition(ArrayList<Integer> position) { //Helper function param arraylist of x,y. Returns value at location. Ex [7,1]=1. Function Overload.
+        return this.gameboard.get(this.convertXYToBoard(position));
     }
 
-    private Integer getBoardPosition(int x, int y) {
+    public Integer getBoardPosition(int x, int y) { //Helper function param ints x, y. Returns value at location. Function Overload.
         ArrayList<Integer> position = new ArrayList<>();
         position.add(x);
         position.add(y);
         return getBoardPosition(position);
     }
 
-    private Integer convertLocToBoard(ArrayList<Integer> loc) {
+    public Integer getBoardPosition(int boardIndex) { //Helper funciton param board index. Returns value at location. Function Overload.
+        return this.gameboard.get(boardIndex);
+    }
+
+
+    public Integer convertXYToBoard(ArrayList<Integer> loc) {
         // Maps [row, col] pair to a single value in the gameboard.
         //loc.get(0) is row, loc.get(1) is col.
         
@@ -117,6 +127,30 @@ public class SmartPlayer {
          */
     }
 
+    public ArrayList<Integer> convertBoardtoXY(int location) {
+        int xVal = 11 - (location / 11);
+        int yVal = (location % 11);
+
+        ArrayList<Integer> res = new ArrayList<>();
+        res.add(xVal);
+        res.add(yVal);
+
+        return res;
+    }
+
+    public List<ArrayList<Integer>> getQueenPositions(int playerId) {
+        List<ArrayList<Integer>> positions = new ArrayList<>();
+
+        for(int i = 0; i < this.gameboard.size(); i++) {
+            if(getBoardPosition(i) == playerId) {
+                positions.add(convertBoardtoXY(i));
+            }
+
+        }
+
+        return positions;
+    }
+
     public void setGameboard(ArrayList<Integer> gameboard) {
         this.gameboard = gameboard;
     }
@@ -125,24 +159,35 @@ public class SmartPlayer {
         return this.gameboard;
     }
 
+    public List<ArrayList<Integer>> getPlayerPositions() {
+        List<ArrayList<Integer>> players = new ArrayList<>();
+
+
+
+        return players;
+     }
+
 
     //This is only for direct testing, the smart player class should not be run as main.
     public static void main(String[] args) {
         System.out.println("SmartPlayer Testing Main Function");
-        SmartPlayer my = new SmartPlayer();
+        Board b = new Board();
         
         ArrayList<Integer> testBoard = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0)); 
-        my.setGameboard(testBoard);
+        b.setGameboard(testBoard);
 
-        ArrayList<Integer> testLoc = new ArrayList<>(Arrays.asList(1,4));
-        
-        System.out.println(my.gameboard.toString());
-        Integer tLoc = my.convertLocToBoard(testLoc);
-        System.out.println(tLoc);
-        
-        my.gameboard.set(tLoc,7);
-        System.out.println(my.gameboard.toString());
 
+        // ArrayList<Integer> testLoc = new ArrayList<>(Arrays.asList(7,1));
+        // System.out.println("Convert XY to board: " + my.convertXYToBoard(testLoc));
+
+        // System.out.println(114 % 11);
+        // System.out.println("Convert board to XY: " + my.convertBoardtoXY(45));
+        // System.out.println(my.getBoardPosition(45));
+
+        // System.out.println(my.getQueenPositions(1));
+
+        ActionFactory af = new ActionFactory();
+        af.getActions(2, b);
     }
 
      
