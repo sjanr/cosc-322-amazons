@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ActionFactory {
-    
-    
+      
     public List<Map<String, ArrayList<Integer>>> getActions(int playerId, Board board) {
         List<Map<String, ArrayList<Integer>>> validMoves = new ArrayList<>();
         
@@ -40,13 +39,12 @@ public class ActionFactory {
     }
 
     private List<ArrayList<Integer>> getMoveActions(ArrayList<Integer> position, Board board) { //Helper function to return all possible moves for a queen at locaiton initialX, initialY
-        int initialX = position.get(0);
-        int initialY = position.get(1);
-
-
         //Make a copy of the board to temporarily simulate the move. Will get deleted after this funciton.
         Board boardCopy = new Board(board.getGameboard());
         boardCopy.setBoardPosition(position, 0); //We do this so that the arrow can land where the queen was placed before move.
+        
+        int initialX = position.get(0);
+        int initialY = position.get(1);
 
         List<ArrayList<Integer>> moves = new ArrayList<>();
     

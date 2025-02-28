@@ -66,6 +66,13 @@ public class Board {
 
     }
 
+    //Overloaded function
+    public void updateGameboard(ArrayList<Integer> queenCurr, ArrayList<Integer> queenNext, ArrayList<Integer> arrowPos, int playerNum) {
+        setBoardPosition(queenCurr, 0);
+        setBoardPosition(queenNext, playerNum);
+        setBoardPosition(arrowPos, 3);
+    }
+
     public boolean setBoardPosition(ArrayList<Integer> move, Integer value) { //Helper function to update single positions.
         this.gameboard.set(convertXYToBoard(move), value);
         return true;
