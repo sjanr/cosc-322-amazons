@@ -13,7 +13,7 @@ public class Board {
     } 
 
     public Board(ArrayList<Integer> gameboard) {
-        this.gameboard = gameboard;
+        this.gameboard = new ArrayList<>(gameboard);
     }
     
 
@@ -24,7 +24,7 @@ public class Board {
         ArrayList<Integer> arrowPos = gameMove.get("arrow-position");
         
         //Check if move lands in a occupied space:
-        if(this.gameboard.get(this.convertXYToBoard(nextPos)) != 0) {
+        if(this.gameboard.get(convertXYToBoard(nextPos)) != 0) {
             System.err.println("Move invalid, player move occupied. validateMove() - SmartPlayer.java");
             return false;
         }
@@ -36,7 +36,7 @@ public class Board {
         }
         
         //Check if arrow lands in occupied space:
-        if(this.gameboard.get(this.convertXYToBoard(arrowPos)) != 0) {
+        if(this.gameboard.get(convertXYToBoard(arrowPos)) != 0) {
             System.err.println("Move invalid, arrow shot occupied. validateMove() - SmartPlayer.java");
             return false;
         }
@@ -67,12 +67,12 @@ public class Board {
     }
 
     public boolean setBoardPosition(ArrayList<Integer> move, Integer value) { //Helper function to update single positions.
-        this.gameboard.set(this.convertXYToBoard(move), value);
+        this.gameboard.set(convertXYToBoard(move), value);
         return true;
     }
-
+    
     public Integer getBoardPosition(ArrayList<Integer> position) { //Helper function param arraylist of x,y. Returns value at location. Ex [7,1]=1. Function Overload.
-        return this.gameboard.get(this.convertXYToBoard(position));
+        return this.gameboard.get(convertXYToBoard(position));
     }
 
     public Integer getBoardPosition(int x, int y) { //Helper function param ints x, y. Returns value at location. Function Overload.
@@ -87,7 +87,7 @@ public class Board {
     }
 
 
-    public Integer convertXYToBoard(ArrayList<Integer> loc) {
+    public static Integer convertXYToBoard(ArrayList<Integer> loc) {
         // Maps [row, col] pair to a single value in the gameboard.
         //loc.get(0) is row, loc.get(1) is col.
         
@@ -127,7 +127,7 @@ public class Board {
          */
     }
 
-    public ArrayList<Integer> convertBoardtoXY(int location) {
+    public static ArrayList<Integer> convertBoardtoXY(int location) {
         int xVal = 11 - (location / 11);
         int yVal = (location % 11);
 
@@ -178,10 +178,10 @@ public class Board {
 
 
         // ArrayList<Integer> testLoc = new ArrayList<>(Arrays.asList(7,1));
-        // System.out.println("Convert XY to board: " + my.convertXYToBoard(testLoc));
+        // System.out.println("Convert XY to board: " + convertXYToBoard(testLoc));
 
         // System.out.println(114 % 11);
-        // System.out.println("Convert board to XY: " + my.convertBoardtoXY(45));
+        // System.out.println("Convert board to XY: " + convertBoardtoXY(45));
         // System.out.println(my.getBoardPosition(45));
 
         // System.out.println(my.getQueenPositions(1));
