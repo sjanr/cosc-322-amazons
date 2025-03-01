@@ -54,22 +54,22 @@ public class Board {
 
     
     /*INCOMPLETE*/
-    public void updateGameboard(Map<String, ArrayList<Integer>> gameMove, int playerNum) {
+    public void updateGameboard(Map<String, ArrayList<Integer>> gameMove, int playerId) {
         ArrayList<Integer> currentPos = gameMove.get("queen-position-current");
         ArrayList<Integer> nextPos = gameMove.get("queen-position-next");
         ArrayList<Integer> arrowPos = gameMove.get("arrow-position");
         
     
         setBoardPosition(currentPos, 0);
-        setBoardPosition(nextPos, playerNum);
+        setBoardPosition(nextPos, playerId);
         setBoardPosition(arrowPos, 3); //SHOULD THIS BE 3?
 
     }
 
     //Overloaded function
-    public void updateGameboard(ArrayList<Integer> queenCurr, ArrayList<Integer> queenNext, ArrayList<Integer> arrowPos, int playerNum) {
+    public void updateGameboard(ArrayList<Integer> queenCurr, ArrayList<Integer> queenNext, ArrayList<Integer> arrowPos, int playerId) {
         setBoardPosition(queenCurr, 0);
-        setBoardPosition(queenNext, playerNum);
+        setBoardPosition(queenNext, playerId);
         setBoardPosition(arrowPos, 3);
     }
 
@@ -145,14 +145,13 @@ public class Board {
         return res;
     }
 
-    public List<ArrayList<Integer>> getQueenPositions(int playerId) {
+    public List<ArrayList<Integer>> getQueenPositions(int playerId) { //Returns queen positions in ArrayList. Loops from start of board to end finding playerId.
         List<ArrayList<Integer>> positions = new ArrayList<>();
 
-        for(int i = 0; i < this.gameboard.size(); i++) {
+        for(int i = 11; i < this.gameboard.size(); i++) { //start at 11 because the first row is always empty.
             if(getBoardPosition(i) == playerId) {
                 positions.add(convertBoardtoXY(i));
             }
-
         }
 
         return positions;
@@ -166,13 +165,23 @@ public class Board {
         return this.gameboard;
     }
 
-    public List<ArrayList<Integer>> getPlayerPositions() {
-        List<ArrayList<Integer>> players = new ArrayList<>();
+    public boolean isGameOver() { //Checks if either player has no moves left. Returns true/false;
+        ActionFactory af = new ActionFactory(); 
+        return af.getActions(1, this).isEmpty() || af.getActions(2, this).isEmpty();
+        
+    }
 
+    /*INCOMPLETE*/ //For now, utility is just number of moves possible. 
+    public int getUtility(int playerId) {
+        ActionFactory af = new ActionFactory();
 
+        //Temporary utility calculation. In this function it just gets number of actions possible and takes difference.
+        if(playerId == 1)
+            return af.getActions(playerId, this).size() - af.getActions(2, this).size();
+        else
+            return af.getActions(playerId, this).size() - af.getActions(1, this).size();
 
-        return players;
-     }
+    }
 
 
     //This is only for direct testing, the smart player class should not be run as main.
@@ -183,6 +192,16 @@ public class Board {
         ArrayList<Integer> testBoard = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0)); 
         b.setGameboard(testBoard);
 
+        /*
+        ArrayList<Integer> testBoard = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 2, 3, 0, 2, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 1, 3, 3, 3)); 
+        b.setGameboard(testBoard);
+
+        for(Integer i : testBoard) {
+            if(testBoard.get(i).equals(0)) {
+                testBoard.set(i, 3);
+            }
+        }
+        */
 
         // ArrayList<Integer> testLoc = new ArrayList<>(Arrays.asList(7,1));
         // System.out.println("Convert XY to board: " + convertXYToBoard(testLoc));
@@ -194,7 +213,24 @@ public class Board {
         // System.out.println(my.getQueenPositions(1));
 
         ActionFactory af = new ActionFactory();
-        af.getActions(2, b);
+        List<Map<String, ArrayList<Integer>>> test = af.getActions(2, b);
+        int i =0 ;
+        for (Map<String, ArrayList<Integer>> action : test) {
+              
+            System.out.print(action.get("queen-position-current") + ", ");  
+            System.out.print(action.get("queen-position-next") + ", ");  
+            System.out.print(action.get("arrow-position") + "\n");  
+            
+            // System.out.println(testBoard);
+        }
+        
+        System.out.println(test.size());
+        System.out.println(b.isGameOver());
+
+        Minimax m = new Minimax();
+        
+        System.out.println(m.execMinimax(b, 1, true, 1));
+        
     }
 
      

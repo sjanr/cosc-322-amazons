@@ -15,7 +15,7 @@ public class ActionFactory {
             List<ArrayList<Integer>> moves = getMoveActions(queen, board);
 
             for(ArrayList<Integer> move : moves) { //for every move, get all possible arrow shots.
-                
+
                 List<ArrayList<Integer>> shots = getMoveActions(move, board);
                 for(ArrayList<Integer> shot : shots) {
                     // System.out.printf("\nQueen: %d, %d    Move: %d, %d    Shot: %d, %d", queen.get(0), queen.get(1), move.get(0), move.get(1), shot.get(0), shot.get(1));
@@ -30,6 +30,16 @@ public class ActionFactory {
                     validMoves.add(action);
 
                 }
+
+                //Also hard-code one action shoot to previous location;
+                Map<String, ArrayList<Integer>> action = new HashMap<>();
+                action.put("queen-position-current", queen);
+                action.put("queen-position-next", move);
+                action.put("arrow-position", queen);
+                //Add map to validMoves
+                validMoves.add(action);
+
+
             }
             
             

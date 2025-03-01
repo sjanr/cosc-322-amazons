@@ -88,6 +88,7 @@ public class COSC322TestHumanPlayer extends GamePlayer{
     	return userName;
     }
 
+
 	@Override
 	public GameClient getGameClient() {
 		// TODO Auto-generated method stub
