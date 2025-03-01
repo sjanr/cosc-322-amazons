@@ -229,7 +229,10 @@ public class Board {
 
         Minimax m = new Minimax();
         
-        System.out.println(m.execMinimax(b, 1, true, 1));
+        List<Object> try1 = m.execMinimax(b, 1, true, 1);
+        System.out.println(try1.get(0));
+        System.out.println(try1.get(1));
+        
         
     }
 

@@ -132,11 +132,15 @@ public class TeamPlayer extends GamePlayer{
 		} catch (IllegalArgumentException i) {
 			System.err.println("GAME OVER; Good game.");
 		}
-		System.out.println("MY MOVE: " + randomAction.get("queen-position-current") +", "+ randomAction.get("queen-position-next") +", "+ randomAction.get("arrow-position"));
 		
+		ArrayList<Integer> queen_pos_curr = randomAction.get("queen-position-current");
+		ArrayList<Integer> queen_pos_next = randomAction.get("queen-position-next");
+		ArrayList<Integer> arrow_pos = randomAction.get("arrow-position");
+		
+		System.out.println("MY MOVE: " + queen_pos_curr +", "+ queen_pos_next +", "+ arrow_pos);
 		//Update client, gui, and local board of move.
-		gameClient.sendMoveMessage(randomAction.get("queen-position-current"), randomAction.get("queen-position-next"), randomAction.get("arrow-position"));
-		gamegui.updateGameState(randomAction.get("queen-position-current"), randomAction.get("queen-position-next"), randomAction.get("arrow-position"));
+		gameClient.sendMoveMessage(queen_pos_curr, queen_pos_next, arrow_pos);
+		gamegui.updateGameState(queen_pos_next, queen_pos_next, arrow_pos);
 		board.updateGameboard(randomAction, playerId);
 	}
 
