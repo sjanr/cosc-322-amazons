@@ -106,6 +106,10 @@ public class TeamPlayer extends GamePlayer{
 			String player1 = (String) msgDetails.get("player-white");
 			String player2 = (String) msgDetails.get("player-black");
 
+			System.out.println("Player Black is " + player2);
+			System.out.println("Player White is " + player1);
+			System.out.println(player2 + " goes first.");
+
 			playerId = player1.equals("Team#18") ? 1:2; //Set player Id based on active player usernames;
 			opponantId = playerId==1 ? 2:1; //Set opponantId based on playerId;
 
@@ -121,7 +125,31 @@ public class TeamPlayer extends GamePlayer{
     	return true;   	
     }
 
-	public void makeMove() {
+	public void makeMove() { //temporary jst for quick switching between random moves and minimax
+		makeMinMaxMove();
+		// makeRandomMove();
+	}
+
+	public void makeMinMaxMove() {
+		Minimax m = new Minimax();
+		List<Object> minimax = m.execMinimax(board, 1, true, playerId);
+
+		// Retrieve the best move (Map<String, ArrayList<Integer>>)
+		Map<String, ArrayList<Integer>> bestMove = (Map<String, ArrayList<Integer>>) minimax.get(1);
+
+		// Access the "queen-position-current" and "queen-position-next" from the best move
+		ArrayList<Integer> queen_pos_curr = bestMove.get("queen-position-current");
+		ArrayList<Integer> queen_pos_next = bestMove.get("queen-position-next");
+		ArrayList<Integer> arrow_pos = bestMove.get("arrow-position");
+
+		System.out.println("MY MOVE: " + queen_pos_curr +", "+ queen_pos_next +", "+ arrow_pos);
+		//Update client, gui, and local board of move.
+		gameClient.sendMoveMessage(queen_pos_curr, queen_pos_next, arrow_pos);
+		gamegui.updateGameState(queen_pos_curr, queen_pos_next, arrow_pos);
+		board.updateGameboard(queen_pos_curr, queen_pos_next, arrow_pos, playerId);
+	}
+
+	public void makeRandomMove() {
 		ActionFactory af = new ActionFactory();
 		List<Map<String,ArrayList<Integer>>> possibleActions = af.getActions(playerId, board);
 
@@ -140,7 +168,7 @@ public class TeamPlayer extends GamePlayer{
 		System.out.println("MY MOVE: " + queen_pos_curr +", "+ queen_pos_next +", "+ arrow_pos);
 		//Update client, gui, and local board of move.
 		gameClient.sendMoveMessage(queen_pos_curr, queen_pos_next, arrow_pos);
-		gamegui.updateGameState(queen_pos_next, queen_pos_next, arrow_pos);
+		gamegui.updateGameState(queen_pos_curr, queen_pos_next, arrow_pos);
 		board.updateGameboard(randomAction, playerId);
 	}
 
