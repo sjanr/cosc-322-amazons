@@ -16,7 +16,7 @@ public class Minimax {
         }
 
         if(isMax) { //MAXIMIZER (playerId)
-            // System.out.println("max");
+            System.out.println("max");
             int bestMove = Integer.MIN_VALUE;
             Map<String, ArrayList<Integer>> bestMoveAction = null;
             List<Object> bestResult = new ArrayList<>();
@@ -44,7 +44,7 @@ public class Minimax {
             return bestResult;
 
         } else { //MINIMIZER (opponantId)
-            // System.out.println("min");
+            System.out.println("min");
             int bestMove = Integer.MAX_VALUE;
             Map<String, ArrayList<Integer>> bestMoveAction = null;
             List<Object> bestResult = new ArrayList<>();
