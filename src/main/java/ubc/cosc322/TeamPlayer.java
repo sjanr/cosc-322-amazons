@@ -110,7 +110,7 @@ public class TeamPlayer extends GamePlayer{
 			System.out.println("Player White is " + player1);
 			System.out.println(player2 + " goes first.");
 
-			playerId = player1.equals("Team#18") ? 1:2; //Set player Id based on active player usernames;
+			playerId = player1.equals(this.userName) ? 1:2; //Set player Id based on active player usernames;
 			opponantId = playerId==1 ? 2:1; //Set opponantId based on playerId;
 
 			if(playerId == 2) {
