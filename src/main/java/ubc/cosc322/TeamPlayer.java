@@ -104,18 +104,19 @@ public class TeamPlayer extends GamePlayer{
 
 		} else if(messageType.equals("cosc322.game-action.start")) {
 			System.out.println("GAME START.");
-			String player1 = (String) msgDetails.get("player-white");
-			String player2 = (String) msgDetails.get("player-black");
+			String whiteQueens = (String) msgDetails.get("player-white");
+			String blackQueens = (String) msgDetails.get("player-black");
 
-			System.out.println("Player Black is " + player2);
-			System.out.println("Player White is " + player1);
-			System.out.println(player2 + " goes first.");
+			System.out.println("Player White is " + whiteQueens);
+			System.out.println("Player Black is " + blackQueens);
+			System.out.println(blackQueens + " goes first.");
 
-			playerId = player1.equals(this.userName) ? 1:2; //Set player Id based on active player usernames;
+			playerId = whiteQueens.equals(this.userName) ? 1:2; //Set player Id based on active player usernames;
 			opponantId = playerId==1 ? 2:1; //Set opponantId based on playerId;
 
 			if(playerId == 2) {
 				//if player 2, start by making a move. //Black moves first, according to lecture.
+				System.out.println("I MOVE FIRST.");
 				makeMove();
 			} else {
 				//if p1 do nothing. wait for move msg rx.			
@@ -127,29 +128,29 @@ public class TeamPlayer extends GamePlayer{
     }
 
 	public void makeMove() { //temporary jst for quick switching between random moves and minimax
-		// makeAlphaBetaMove();
-		makeMinMaxMove();
+		makeAlphaBetaMove();
+		// makeMinMaxMove();
 		// makeRandomMove();
 	}
 
-	// public void makeAlphaBetaMove() {
-	// 	Minimax m = new Minimax();
-	// 	List<Object> minimax = m.execAlphaBetaMinimax(board, 1, true, playerId, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	public void makeAlphaBetaMove() {
+		Minimax m = new Minimax();
+		List<Object> minimax = m.execAlphaBetaMinimax(board, 1, true, playerId, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
-	// 	// Retrieve the best move (Map<String, ArrayList<Integer>>)
-	// 	Map<String, ArrayList<Integer>> bestMove = (Map<String, ArrayList<Integer>>) minimax.get(1);
+		// Retrieve the best move (Map<String, ArrayList<Integer>>)
+		Map<String, ArrayList<Integer>> bestMove = (Map<String, ArrayList<Integer>>) minimax.get(1);
 
-	// 	// Access the "queen-position-current" and "queen-position-next" from the best move
-	// 	ArrayList<Integer> queen_pos_curr = bestMove.get("queen-position-current");
-	// 	ArrayList<Integer> queen_pos_next = bestMove.get("queen-position-next");
-	// 	ArrayList<Integer> arrow_pos = bestMove.get("arrow-position");
+		// Access the "queen-position-current" and "queen-position-next" from the best move
+		ArrayList<Integer> queen_pos_curr = bestMove.get("queen-position-current");
+		ArrayList<Integer> queen_pos_next = bestMove.get("queen-position-next");
+		ArrayList<Integer> arrow_pos = bestMove.get("arrow-position");
 
-	// 	System.out.println("MY Alpha-Beta MOVE: " + queen_pos_curr +", "+ queen_pos_next +", "+ arrow_pos);
-	// 	//Update client, gui, and local board of move.
-	// 	gameClient.sendMoveMessage(queen_pos_curr, queen_pos_next, arrow_pos);
-	// 	gamegui.updateGameState(queen_pos_curr, queen_pos_next, arrow_pos);
-	// 	board.updateGameboard(queen_pos_curr, queen_pos_next, arrow_pos, playerId);
-	// }
+		System.out.println("MY Alpha-Beta MOVE: " + queen_pos_curr +", "+ queen_pos_next +", "+ arrow_pos);
+		//Update client, gui, and local board of move.
+		gameClient.sendMoveMessage(queen_pos_curr, queen_pos_next, arrow_pos);
+		gamegui.updateGameState(queen_pos_curr, queen_pos_next, arrow_pos);
+		board.updateGameboard(queen_pos_curr, queen_pos_next, arrow_pos, playerId);
+	}
 
 	public void makeMinMaxMove() {
 		Minimax m = new Minimax();
