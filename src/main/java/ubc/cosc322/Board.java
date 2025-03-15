@@ -214,26 +214,29 @@ public class Board {
 
         ActionFactory af = new ActionFactory();
         List<Map<String, ArrayList<Integer>>> test = af.getActions(2, b);
-        int i =0 ;
-        for (Map<String, ArrayList<Integer>> action : test) {
+        // int i =0 ;
+        // for (Map<String, ArrayList<Integer>> action : test) {
               
-            System.out.print(action.get("queen-position-current") + ", ");  
-            System.out.print(action.get("queen-position-next") + ", ");  
-            System.out.print(action.get("arrow-position") + "\n");  
+        //     System.out.print(action.get("queen-position-current") + ", ");  
+        //     System.out.print(action.get("queen-position-next") + ", ");  
+        //     System.out.print(action.get("arrow-position") + "\n");  
             
-            // System.out.println(testBoard);
-        }
+        //     // System.out.println(testBoard);
+        // }
         
-        System.out.println(test.size());
-        System.out.println(b.isGameOver());
+        System.out.println("Number of actions: " + test.size());
+        System.out.println("IsGameOver? "+ b.isGameOver());
 
         Minimax m = new Minimax();
         
         List<Object> try1 = m.execMinimax(b, 1, true, 1);
         System.out.println(try1.get(0));
         System.out.println(try1.get(1));
-        
-        
+
+        List<Object> try2 = m.execAlphaBetaMinimax(b, 2, true, 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        System.out.println(try2.get(0));
+        System.out.println(try2.get(1));
+        System.out.println("END");
     }
 
      
