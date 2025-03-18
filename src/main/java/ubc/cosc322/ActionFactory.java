@@ -48,7 +48,7 @@ public class ActionFactory {
         return validMoves;
     }
 
-    private List<ArrayList<Integer>> getMoveActions(ArrayList<Integer> position, Board board) { //Helper function to return all possible moves for a queen at locaiton initialX, initialY
+    public List<ArrayList<Integer>> getMoveActions(ArrayList<Integer> position, Board board) { //Helper function to return all possible moves for a queen at locaiton initialX, initialY
         //Make a copy of the board to temporarily simulate the move. Will get deleted after this funciton.
         Board boardCopy = new Board(board.getGameboard());
         boardCopy.setBoardPosition(position, 0); //We do this so that the arrow can land where the queen was placed before move.
