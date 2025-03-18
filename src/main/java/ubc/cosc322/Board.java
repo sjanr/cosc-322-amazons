@@ -256,7 +256,6 @@ public class Board {
     }
 
 
-
     //This is only for direct testing, the smart player class should not be run as main.
     public static void main(String[] args) {
         System.out.println("SmartPlayer Testing Main Function");
