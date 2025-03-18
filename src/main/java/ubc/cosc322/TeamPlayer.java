@@ -1,6 +1,8 @@
 
 package ubc.cosc322;
 
+import java.time.Instant;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +32,7 @@ public class TeamPlayer extends GamePlayer{
     public static void main(String[] args) {				 
     	// COSC322Test player = new COSC322Test(args[0], args[1]);
 
-		TeamPlayer player = new TeamPlayer("Team#18", "cosc322");
+		TeamPlayer player = new TeamPlayer("Team#18AB", "cosc322");
 
     	if(player.getGameGUI() == null) {
     		player.Go();
@@ -131,11 +133,23 @@ public class TeamPlayer extends GamePlayer{
 		makeAlphaBetaMove();
 		// makeMinMaxMove();
 		// makeRandomMove();
+		// System.out.println(board.getGameboard());
 	}
 
+	public static int counter = 0;
+	public static int depth = 1;
 	public void makeAlphaBetaMove() {
+		counter++;
+		if(counter == 5 || counter == 15) { //on move 5 and 15 it increments depth search during gameplay. This is temporary only for lab session tournament. 
+			depth++;
+			// System.err.println("**** INCREASING DEPTH: " + depth + " *********************************");
+			// System.out.println();
+			// System.out.println();
+			// System.out.println();
+			// System.out.println();
+		}
 		Minimax m = new Minimax();
-		List<Object> minimax = m.execAlphaBetaMinimax(board, 1, true, playerId, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		List<Object> minimax = m.execAlphaBetaMinimax(board, depth, true, playerId, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
 		// Retrieve the best move (Map<String, ArrayList<Integer>>)
 		Map<String, ArrayList<Integer>> bestMove = (Map<String, ArrayList<Integer>>) minimax.get(1);
