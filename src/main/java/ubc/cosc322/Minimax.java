@@ -3,6 +3,8 @@ package ubc.cosc322;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.time.Instant;
+import java.time.Duration;
 
 public class Minimax {
 
@@ -75,10 +77,13 @@ public class Minimax {
     }
  
     //Alpha-Beta pruning added to minimax algorithm.
-    public List<Object> execAlphaBetaMinimax(Board board, int depth, boolean isMax, int playerId, int alpha, int beta) {
+    public List<Object> execAlphaBetaMinimax(Board board, int depth, boolean isMax, int playerId, int alpha, int beta, Instant startTime) {
+        Instant nowTime = Instant.now();
+        Duration duration = Duration.between(startTime, nowTime);
+
         int opponantId = playerId == 1 ? 2:1;
 
-        if(depth == 0 || board.isGameOver()) {
+        if(depth == 0 || board.isGameOver() || duration.getSeconds() > 20) {
             List<Object> result = new ArrayList<>();
             result.add(board.getUtility(playerId)); //base case only has a utility. No move
             return result;
@@ -95,7 +100,7 @@ public class Minimax {
                 Board testMove = new Board(board.getGameboard()); //make copy of board and simulate move
                 testMove.updateGameboard(move, playerId);
                 
-                List<Object> res = execAlphaBetaMinimax(testMove, depth - 1, false, playerId, alpha, beta);
+                List<Object> res = execAlphaBetaMinimax(testMove, depth - 1, false, playerId, alpha, beta, startTime);
                 int value = (int) res.get(0); //get utility the returned recursive call
                 // int res = execAlphaBetaMinimax(testMove, depth - 1, false, playerId, alpha, beta);
                 // int value = res;
@@ -134,7 +139,7 @@ public class Minimax {
                 Board testMove = new Board(board.getGameboard()); //make copy of board and simulate move
                 testMove.updateGameboard(move, opponantId);
               
-                List<Object> res = execAlphaBetaMinimax(testMove, depth - 1, true, playerId, alpha, beta);
+                List<Object> res = execAlphaBetaMinimax(testMove, depth - 1, true, playerId, alpha, beta, startTime);
                 int value = (int) res.get(0);
                 // int res = execAlphaBetaMinimax(testMove, depth - 1, true, playerId, alpha, beta);
                 // int value = res;

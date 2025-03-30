@@ -136,20 +136,9 @@ public class TeamPlayer extends GamePlayer{
 		// System.out.println(board.getGameboard());
 	}
 
-	public static int counter = 0;
-	public static int depth = 1;
 	public void makeAlphaBetaMove() {
-		counter++;
-		if(counter == 5 || counter == 15) { //on move 5 and 15 it increments depth search during gameplay. This is temporary only for lab session tournament. 
-			depth++;
-			// System.err.println("**** INCREASING DEPTH: " + depth + " *********************************");
-			// System.out.println();
-			// System.out.println();
-			// System.out.println();
-			// System.out.println();
-		}
 		Minimax m = new Minimax();
-		List<Object> minimax = m.execAlphaBetaMinimax(board, depth, true, playerId, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		List<Object> minimax = m.execAlphaBetaMinimax(board, 3, true, playerId, Integer.MIN_VALUE, Integer.MAX_VALUE, Instant.now());
 
 		// Retrieve the best move (Map<String, ArrayList<Integer>>)
 		Map<String, ArrayList<Integer>> bestMove = (Map<String, ArrayList<Integer>>) minimax.get(1);
