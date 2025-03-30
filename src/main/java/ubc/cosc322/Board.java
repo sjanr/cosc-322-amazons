@@ -54,8 +54,6 @@ public class Board {
         return true;
     }
 
-    
-    /*INCOMPLETE*/
     public void updateGameboard(Map<String, ArrayList<Integer>> gameMove, int playerId) {
         ArrayList<Integer> currentPos = gameMove.get("queen-position-current");
         ArrayList<Integer> nextPos = gameMove.get("queen-position-next");
@@ -64,7 +62,7 @@ public class Board {
     
         setBoardPosition(currentPos, 0);
         setBoardPosition(nextPos, playerId);
-        setBoardPosition(arrowPos, 3); //SHOULD THIS BE 3?
+        setBoardPosition(arrowPos, 3); // For our player, arrows are denoted by 3.
 
     }
 
@@ -173,8 +171,9 @@ public class Board {
         
     }
 
-    /*INCOMPLETE*/ //For now, utility is just number of moves possible. 
+    //[INITIALLY getUtility function was a min-movecount heuristic ]
     // public int getUtility(int playerId) {
+    //     For now, utility is just number of moves possible. 
     //     ActionFactory af = new ActionFactory();
 
     //     //Temporary utility calculation. In this function it just gets number of actions possible and takes difference.
@@ -228,7 +227,7 @@ public class Board {
         }
 
         // BFS for multi-source shortest paths
-        int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
         while (!queue.isEmpty()) {
             int[] cell = queue.poll();
             int x = cell[0], y = cell[1], d = cell[2], owner = cell[3];
@@ -254,59 +253,5 @@ public class Board {
 
         return territory;
     }
-
-
-    //This is only for direct testing, the smart player class should not be run as main.
-    public static void main(String[] args) {
-        System.out.println("SmartPlayer Testing Main Function");
-        Board b = new Board();
-        
-        ArrayList<Integer> testBoard = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0)); 
-        b.setGameboard(testBoard);
-
-        /*
-        ArrayList<Integer> testBoard = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 2, 3, 0, 2, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 3, 3, 1, 3, 3, 3)); 
-        b.setGameboard(testBoard);
-
-        for(Integer i : testBoard) {
-            if(testBoard.get(i).equals(0)) {
-                testBoard.set(i, 3);
-            }
-        }
-        */
-
-        // ArrayList<Integer> testLoc = new ArrayList<>(Arrays.asList(7,1));
-        // System.out.println("Convert XY to board: " + convertXYToBoard(testLoc));
-
-        // System.out.println(114 % 11);
-        // System.out.println("Convert board to XY: " + convertBoardtoXY(45));
-        // System.out.println(my.getBoardPosition(45));
-
-        // System.out.println(my.getQueenPositions(1));
-
-        ActionFactory af = new ActionFactory();
-        List<Map<String, ArrayList<Integer>>> test = af.getActions(2, b);
-        int i =0 ;
-        for (Map<String, ArrayList<Integer>> action : test) {
-              
-            System.out.print(action.get("queen-position-current") + ", ");  
-            System.out.print(action.get("queen-position-next") + ", ");  
-            System.out.print(action.get("arrow-position") + "\n");  
-            
-            // System.out.println(testBoard);
-        }
-        
-        System.out.println(test.size());
-        System.out.println(b.isGameOver());
-
-        Minimax m = new Minimax();
-        
-        List<Object> try1 = m.execMinimax(b, 1, true, 1);
-        System.out.println(try1.get(0));
-        System.out.println(try1.get(1));
-        
-        
-    }
-
      
 }
