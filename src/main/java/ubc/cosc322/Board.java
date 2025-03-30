@@ -54,19 +54,19 @@ public class Board {
         return true;
     }
 
+    //Overloaded function. Parameters of a map of gameMove including queen current position, next position, and arrow shot. Also takes in player Id. 
     public void updateGameboard(Map<String, ArrayList<Integer>> gameMove, int playerId) {
         ArrayList<Integer> currentPos = gameMove.get("queen-position-current");
         ArrayList<Integer> nextPos = gameMove.get("queen-position-next");
         ArrayList<Integer> arrowPos = gameMove.get("arrow-position");
-        
     
         setBoardPosition(currentPos, 0);
         setBoardPosition(nextPos, playerId);
-        setBoardPosition(arrowPos, 3); // For our player, arrows are denoted by 3.
+        setBoardPosition(arrowPos, 3); // For our player, arrows are denoted by 3. Player by 1 or 2 and empty space by 0.
 
     }
 
-    //Overloaded function
+    //Overloaded function. Parameters of current queen pos, queen resulting move, and the arrow shot. Also takes in player id.
     public void updateGameboard(ArrayList<Integer> queenCurr, ArrayList<Integer> queenNext, ArrayList<Integer> arrowPos, int playerId) {
         setBoardPosition(queenCurr, 0);
         setBoardPosition(queenNext, playerId);
@@ -78,24 +78,24 @@ public class Board {
         return true;
     }
     
-    public Integer getBoardPosition(ArrayList<Integer> position) { //Helper function param arraylist of x,y. Returns value at location. Ex [7,1]=1. Function Overload.
+    public Integer getBoardPosition(ArrayList<Integer> position) { //Helper function param arraylist of x,y. Returns value at location. Ex [7,1]=1. Overloaded Function.
         return this.gameboard.get(convertXYToBoard(position));
     }
 
-    public Integer getBoardPosition(int x, int y) { //Helper function param ints x, y. Returns value at location. Function Overload.
+    public Integer getBoardPosition(int x, int y) { //Helper function param ints x, y. Returns value at location. Overloaded Function.
         ArrayList<Integer> position = new ArrayList<>();
         position.add(x);
         position.add(y);
         return getBoardPosition(position);
     }
 
-    public Integer getBoardPosition(int boardIndex) { //Helper funciton param board index. Returns value at location. Function Overload.
+    public Integer getBoardPosition(int boardIndex) { //Helper funciton param board index. Returns value at location. Overloaded Function.
         return this.gameboard.get(boardIndex);
     }
 
 
-    public static Integer convertXYToBoard(ArrayList<Integer> loc) {
-        // Maps [row, col] pair to a single value in the gameboard.
+    public static Integer convertXYToBoard(ArrayList<Integer> loc) { 
+        // Maps [row, col] pair to a single value in the gameboard (index in the single array).
         //loc.get(0) is row, loc.get(1) is col.
         
         return (11-loc.get(0))*11+(loc.get(1)); //removed the plus one from the formula below because of array indexing starting from zero.
@@ -135,6 +135,7 @@ public class Board {
     }
 
     public static ArrayList<Integer> convertBoardtoXY(int location) {
+        //Converts board index to row/col pair. 
         int xVal = 11 - (location / 11);
         int yVal = (location % 11);
 
@@ -168,10 +169,9 @@ public class Board {
     public boolean isGameOver() { //Checks if either player has no moves left. Returns true/false;
         ActionFactory af = new ActionFactory(); 
         return af.getActions(1, this).isEmpty() || af.getActions(2, this).isEmpty();
-        
     }
 
-    //[INITIALLY getUtility function was a min-movecount heuristic ]
+    //[INITIALLY getUtility function was a min-movecount heuristic].
     // public int getUtility(int playerId) {
     //     For now, utility is just number of moves possible. 
     //     ActionFactory af = new ActionFactory();
@@ -181,7 +181,6 @@ public class Board {
     //         return af.getActions(playerId, this).size() - af.getActions(2, this).size();
     //     else
     //         return af.getActions(playerId, this).size() - af.getActions(1, this).size();
-
     // }
 
     public int getUtility(int playerId) {

@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Minimax {
-    
+
+    //This is basic minimax algorithm. Following this function is algorithm with Alpha-Beta pruning.
     //normal node returns will look like List<Map<String, ArrayList<Integer>>>
     //terminal node returns will only be List<Object> of arraylist with just the utility result.
     public List<Object> execMinimax(Board board, int depth, boolean isMax, int playerId) {
@@ -36,7 +37,6 @@ public class Minimax {
                     bestMove = value;
                     bestMoveAction = move;
                 }
-
             }
 
             //Add best value and move to return.
@@ -74,6 +74,7 @@ public class Minimax {
         }
     }
  
+    //Alpha-Beta pruning added to minimax algorithm.
     public List<Object> execAlphaBetaMinimax(Board board, int depth, boolean isMax, int playerId, int alpha, int beta) {
         int opponantId = playerId == 1 ? 2:1;
 
@@ -108,7 +109,7 @@ public class Minimax {
                 alpha = Math.max(alpha, bestMove);
 
                 if(beta <= alpha) {
-                    System.out.println("branch pruned");
+                    // System.out.println("branch pruned");
                     break; //prune branches.
                 }
 
@@ -147,11 +148,10 @@ public class Minimax {
                 beta = Math.min(beta, bestMove);
 
                 if(beta <= alpha) {
-                    System.out.println("branch pruned");
+                    // System.out.println("branch pruned");
                     break; //prune branch
                 }
             }
-
             
             //addd best value and move to return.
             bestResult.add(bestMove);
@@ -160,7 +160,4 @@ public class Minimax {
             // return bestMove;
         }
     }
- 
-       
-
 }
