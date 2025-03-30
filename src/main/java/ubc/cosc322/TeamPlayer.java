@@ -75,15 +75,13 @@ public class TeamPlayer extends GamePlayer{
     public boolean handleGameMessage(String messageType, Map<String, Object> msgDetails) {
     	//This method will be called by the GameClient when it receives a game-related message
     	//from the server.
-		System.out.println("MSG RXD: " + messageType);
+		// System.out.println("MSG RXD: " + messageType);
 
 		if(messageType.equals("cosc322.game-state.board")) {
-			System.out.println("RXD Board: " + msgDetails.get("game-state"));
+			System.out.println("Rx'd Board: " + msgDetails.get("game-state"));
+			System.out.println("Initializing Game Board locally and gamegui.");
 			gamegui.setGameState((ArrayList<Integer>) msgDetails.get("game-state"));
-			
 			board.setGameboard((ArrayList<Integer>)msgDetails.get("game-state"));
-
-
 			
 		} else if (messageType.equals("cosc322.game-action.move")) {
 			if(board.isGameOver()) {
@@ -91,7 +89,7 @@ public class TeamPlayer extends GamePlayer{
 				return false;
 			}
 
-			System.out.println("RXD Move Msg: " + msgDetails);
+			System.out.println("Opponant's Move: " + msgDetails); 
 
 			ArrayList<Integer> queenCurr =(ArrayList<Integer>) msgDetails.get("queen-position-current");
 			ArrayList<Integer> queenNext =(ArrayList<Integer>) msgDetails.get("queen-position-next");
