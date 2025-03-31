@@ -32,7 +32,7 @@ public class TeamPlayer extends GamePlayer{
     public static void main(String[] args) {				 
     	// COSC322Test player = new COSC322Test(args[0], args[1]);
 
-		TeamPlayer player = new TeamPlayer("Team#18JS", "cosc322");
+		TeamPlayer player = new TeamPlayer("Team#18", "cosc322");
 
     	if(player.getGameGUI() == null) {
     		player.Go();
@@ -84,10 +84,7 @@ public class TeamPlayer extends GamePlayer{
 			board.setGameboard((ArrayList<Integer>)msgDetails.get("game-state"));
 			
 		} else if (messageType.equals("cosc322.game-action.move")) {
-			if(board.isGameOver()) {
-				System.err.println("GAME OVER; Good game.");
-				return false;
-			}
+
 
 			System.out.println("Opponant's Move: " + msgDetails); 
 
@@ -99,6 +96,10 @@ public class TeamPlayer extends GamePlayer{
 			gamegui.updateGameState(queenCurr, queenNext, arrowPos);
 			board.updateGameboard(queenCurr, queenNext, arrowPos, opponantId);
 
+			if(board.isGameOver()) {
+				System.err.println("GAME OVER; Good game.");
+				return false;
+			}
 			//return with move.
 			makeMove();
 
@@ -141,9 +142,9 @@ public class TeamPlayer extends GamePlayer{
 		Instant timeEnd = timeNow.plus(dur);
 		int depth = 1;
 		List<Object> minimax = null;
-		List<Object> tempSaveMove;
+	
 		while(Instant.now().isBefore(timeEnd)) {
-			tempSaveMove = m.execAlphaBetaMinimax(board, depth++, true, playerId, Integer.MIN_VALUE, Integer.MAX_VALUE, timeEnd);
+			List<Object> tempSaveMove = m.execAlphaBetaMinimax(board, depth++, true, playerId, Integer.MIN_VALUE, Integer.MAX_VALUE, timeEnd);
 			if(minimax == null || ((Integer) tempSaveMove.get(0) > (Integer) minimax.get(0))) { //if previous found move better than now or if first run rewrite best move.
 				minimax = tempSaveMove;
 				System.out.println("Found better move: " + tempSaveMove.get(0));
