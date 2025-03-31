@@ -136,7 +136,19 @@ public class TeamPlayer extends GamePlayer{
 
 	public void makeAlphaBetaMove() {
 		Minimax m = new Minimax();
-		List<Object> minimax = m.execAlphaBetaMinimax(board, 3, true, playerId, Integer.MIN_VALUE, Integer.MAX_VALUE, Instant.now());
+		Instant timeNow = Instant.now();
+		Duration dur = Duration.ofSeconds(20);
+		Instant timeEnd = timeNow.plus(dur);
+		int depth = 1;
+		List<Object> minimax = null;
+		List<Object> tempSaveMove;
+		while(Instant.now().isBefore(timeEnd)) {
+			tempSaveMove = m.execAlphaBetaMinimax(board, depth++, true, playerId, Integer.MIN_VALUE, Integer.MAX_VALUE, timeEnd);
+			if(minimax == null || ((Integer) tempSaveMove.get(0) > (Integer) minimax.get(0))) { //if previous found move better than now or if first run rewrite best move.
+				minimax = tempSaveMove;
+				System.out.println("Found better move: " + tempSaveMove.get(0));
+			}
+		}
 
 		// Retrieve the best move (Map<String, ArrayList<Integer>>)
 		Map<String, ArrayList<Integer>> bestMove = (Map<String, ArrayList<Integer>>) minimax.get(1);
