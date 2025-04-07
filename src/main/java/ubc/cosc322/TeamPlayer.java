@@ -1,3 +1,8 @@
+/*
+ * The new advanced player is minimax with alpha beta pruning, iterative deepening, 
+ * and with memoization for "cache"-ing moves and remembering it for subsequent 
+ * searches. It also uses voronoi diagram heuristic for determining utility of a game state.
+ */
 
 package ubc.cosc322;
 
@@ -26,13 +31,12 @@ public class TeamPlayer extends GamePlayer{
  
 	private ZobristHash zHash;
 	private Minimax m;
-    /**
+
+	/**
      * The main method
      * @param args for name and passwd (current, any string would work)
      */
     public static void main(String[] args) {				 
-    	// COSC322Test player = new COSC322Test(args[0], args[1]);
-
 		TeamPlayer player = new TeamPlayer("Team#18", "cosc322");
 
     	if(player.getGameGUI() == null) {
@@ -53,12 +57,11 @@ public class TeamPlayer extends GamePlayer{
      * @param userName
       * @param passwd
      */
+
     public TeamPlayer(String userName, String passwd) {
     	this.userName = userName;
     	this.passwd = passwd;
-    	
     	this.gamegui = new BaseGameGUI(this);
-
 		this.board = new Board();
     }
 
@@ -76,24 +79,18 @@ public class TeamPlayer extends GamePlayer{
     public boolean handleGameMessage(String messageType, Map<String, Object> msgDetails) {
     	//This method will be called by the GameClient when it receives a game-related message
     	//from the server.
-		// System.out.println("MSG RXD: " + messageType);
-
 		if(messageType.equals("cosc322.game-state.board")) {
 			System.out.println("Rx'd Board: " + msgDetails.get("game-state"));
 			System.out.println("Initializing Game Board locally and gamegui.");
 			gamegui.setGameState((ArrayList<Integer>) msgDetails.get("game-state"));
 			board.setGameboard((ArrayList<Integer>)msgDetails.get("game-state"));
-			
 			//Set up memoization
 			this.zHash = new ZobristHash(board);
 			this.m = new Minimax(zHash);
 			
-			
 		} else if (messageType.equals("cosc322.game-action.move")) {
-
-
 			System.out.println("Opponant's Move: " + msgDetails); 
-
+			//Gets board info and stores in an arraylist for local use.
 			ArrayList<Integer> queenCurr =(ArrayList<Integer>) msgDetails.get("queen-position-current");
 			ArrayList<Integer> queenNext =(ArrayList<Integer>) msgDetails.get("queen-position-next");
 			ArrayList<Integer> arrowPos =(ArrayList<Integer>) msgDetails.get("arrow-position");
@@ -136,22 +133,21 @@ public class TeamPlayer extends GamePlayer{
     	return true;   	
     }
 
-	public void makeMove() { //temporary jst for quick switching between random moves and minimax
+	public void makeMove() { //for quick switching between random moves, minimax and minmax with alpha beta pruning methods.
 		makeAlphaBetaMove();
-		// makeMinMaxMove();
-		// makeRandomMove();
-		// System.out.println(board.getGameboard());
 	}
 
+	// This method is for a MinMax move with alpha-beta pruning.
 	public void makeAlphaBetaMove() {
-		//Setup timing max of 24 seconds before exiting recusive stack
+		//Setup timing max of 24 seconds before exiting recusive stack to avoid timeout.
 		Instant timeNow = Instant.now();
 		Duration dur = Duration.ofSeconds(24);
 		Instant timeEnd = timeNow.plus(dur);
 		int depth = 1;
 		List<Object> minimax = null;
 	
-		while(Instant.now().isBefore(timeEnd)) {
+		while(Instant.now().isBefore(timeEnd)) { //while time is not up, keep searching for best move.
+			//stores the best move found so far
 			List<Object> tempSaveMove = m.execAlphaBetaMinimax(board, depth++, true, playerId, Integer.MIN_VALUE, Integer.MAX_VALUE, timeEnd);
 			System.out.println("Found move (Utility: " + tempSaveMove.get(0) + ") at depth: " + depth);
 			if(minimax == null || ((Integer) tempSaveMove.get(0) > (Integer) minimax.get(0))) { //if previous found move better than now or if first run rewrite best move.
@@ -160,24 +156,25 @@ public class TeamPlayer extends GamePlayer{
 			}
 
 		}
-		//We are player white. The new advanced player is minimax with alpha beta pruning, iterative deepening, and with memoization for "cache"-ing moves and remembering it for subsequent searches. It also uses voronoi diagram heuristic for determining utility of a game state.
-		// Playing against a basic minimmax player that is using a move count heuristic. They are black.
-
+		
 		// Retrieve the best move (Map<String, ArrayList<Integer>>)
 		Map<String, ArrayList<Integer>> bestMove = (Map<String, ArrayList<Integer>>) minimax.get(1);
-
 		// Access the "queen-position-current" and "queen-position-next" from the best move
 		ArrayList<Integer> queen_pos_curr = bestMove.get("queen-position-current");
 		ArrayList<Integer> queen_pos_next = bestMove.get("queen-position-next");
 		ArrayList<Integer> arrow_pos = bestMove.get("arrow-position");
-
 		System.out.println("MY Alpha-Beta MOVE: " + queen_pos_curr +", "+ queen_pos_next +", "+ arrow_pos);
+		
 		//Update client, gui, and local board of move.
 		gameClient.sendMoveMessage(queen_pos_curr, queen_pos_next, arrow_pos);
 		gamegui.updateGameState(queen_pos_curr, queen_pos_next, arrow_pos);
 		board.updateGameboard(queen_pos_curr, queen_pos_next, arrow_pos, playerId);
 	}
 
+	
+	// This method is for a MinMax move without alpha-beta pruning.
+	// It is not used in the final version of the player, but is kept for reference.
+	/*
 	public void makeMinMaxMove() {
 		Minimax mOld = new Minimax();
 		List<Object> minimax = mOld.execMinimax(board, 1, true, playerId);
@@ -196,7 +193,11 @@ public class TeamPlayer extends GamePlayer{
 		gamegui.updateGameState(queen_pos_curr, queen_pos_next, arrow_pos);
 		board.updateGameboard(queen_pos_curr, queen_pos_next, arrow_pos, playerId);
 	}
+	*/
 
+	// This method is for a random move.
+	// It is not used in the final version of the player, but is kept for reference.
+	/*
 	public void makeRandomMove() {
 		ActionFactory af = new ActionFactory();
 		List<Map<String,ArrayList<Integer>>> possibleActions = af.getActions(playerId, board);
@@ -219,6 +220,7 @@ public class TeamPlayer extends GamePlayer{
 		gamegui.updateGameState(queen_pos_curr, queen_pos_next, arrow_pos);
 		board.updateGameboard(randomAction, playerId);
 	}
+	*/
 
     @Override
     public String userName() {
@@ -227,22 +229,20 @@ public class TeamPlayer extends GamePlayer{
 
 	@Override
 	public GameClient getGameClient() {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 		return this.gameClient;
 	}
 
 	@Override
 	public BaseGameGUI getGameGUI() {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 
 		return this.gamegui;
 	}
 
 	@Override
 	public void connect() {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
     	gameClient = new GameClient(userName, passwd, this);			
 	}
-
- 
-}//end of class
+}
