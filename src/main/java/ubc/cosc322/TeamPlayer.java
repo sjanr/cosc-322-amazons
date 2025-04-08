@@ -9,6 +9,7 @@ package ubc.cosc322;
 import java.time.Instant;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -95,6 +96,15 @@ public class TeamPlayer extends GamePlayer{
 			ArrayList<Integer> queenNext =(ArrayList<Integer>) msgDetails.get("queen-position-next");
 			ArrayList<Integer> arrowPos =(ArrayList<Integer>) msgDetails.get("arrow-position");
 
+			// Combine opponent move parts into a single map for checking
+			Map<String, ArrayList<Integer>> opponentMove = new HashMap<>();
+			opponentMove.put("queen-position-current", queenCurr);
+			opponentMove.put("queen-position-next", queenNext);
+			opponentMove.put("arrow-position", arrowPos);
+
+			// Validate opponents move and proceed to update GUI
+			board.checkMove(opponentMove, opponantId);
+
 			//Update gui and local board variable
 			gamegui.updateGameState(queenCurr, queenNext, arrowPos);
 			board.updateGameboard(queenCurr, queenNext, arrowPos, opponantId);
@@ -159,6 +169,10 @@ public class TeamPlayer extends GamePlayer{
 		
 		// Retrieve the best move (Map<String, ArrayList<Integer>>)
 		Map<String, ArrayList<Integer>> bestMove = (Map<String, ArrayList<Integer>>) minimax.get(1);
+
+		// Validate best move
+		board.checkMove(bestMove, playerId);
+
 		// Access the "queen-position-current" and "queen-position-next" from the best move
 		ArrayList<Integer> queen_pos_curr = bestMove.get("queen-position-current");
 		ArrayList<Integer> queen_pos_next = bestMove.get("queen-position-next");

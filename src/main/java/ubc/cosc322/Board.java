@@ -19,13 +19,30 @@ public class Board {
         this.gameboard = new ArrayList<>(gameboard);
     }
 
+    public boolean checkMove(Map<String, ArrayList<Integer>> gameMove, int playerId) {
+        ArrayList<Integer> curr = gameMove.get("queen-position-current");
+        ArrayList<Integer> next = gameMove.get("queen-position-next");
+        ArrayList<Integer> arrow = gameMove.get("arrow-position");
+
+        boolean valid = validateMove(gameMove);
+
+        String msg = valid ? 
+            String.format("VALID MOVE by Player %d: %s -> %s, Arrow: %s", playerId, curr, next, arrow) :
+            String.format("INVALID MOVE by Player %d: %s -> %s, Arrow: %s", playerId, curr, next, arrow);
+
+        System.out.println(msg);
+        return valid;
+    }
+
     public boolean validateMove(Map<String, ArrayList<Integer>> gameMove) {
         ArrayList<Integer> currentPos = gameMove.get("queen-position-current");
         ArrayList<Integer> nextPos = gameMove.get("queen-position-next");
         ArrayList<Integer> arrowPos = gameMove.get("arrow-position");
 
-        if (!isValidPosition(nextPos) || !isValidPosition(arrowPos)) return false;
-        if (!isPathClear(currentPos, nextPos) || !isPathClear(nextPos, arrowPos)) return false;
+        if (this.gameboard.get(convertXYToBoard(nextPos)) != 0) return false;
+        if (nextPos.get(0) <= 0 || nextPos.get(0) >= 11 || nextPos.get(1) >= 11 || nextPos.get(1) <= 0) return false;
+        if (this.gameboard.get(convertXYToBoard(arrowPos)) != 0) return false;
+
         return true;
     }
 
