@@ -33,7 +33,6 @@ Our AI placed **3rd out of 22 teams** in the UBCO COSC 322 Game of Amazons Tourn
 
 ## 📈 Development Summary
 
-📈 Development Summary
 We began the project by completing warm-up demos and reviewing the SmartFox game server’s API. After experimenting with the provided HumanPlayer class, we developed a custom player that maintains an internal game board, validates actions, and communicates effectively with the server. This setup allowed us to simulate moves and apply game logic independently of the server's visual interface.
 
 To generate all legal queen and arrow combinations, we implemented an Action Factory capable of dynamically exploring every direction on the board. For rule enforcement, we developed robust move validation logic that checks all aspects of gameplay legality.
