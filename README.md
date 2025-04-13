@@ -42,8 +42,6 @@ For decision-making, we implemented the Minimax algorithm with Alpha-Beta prunin
 
 To improve efficiency, we integrated Zobrist hashing to compute unique board states quickly and used a transposition table for memoization, significantly reducing redundant evaluations during search.
 
-Our development briefly stalled due to remote connectivity issues over reading week. After setting up the UBC Okanagan VPN, we were able to resume work seamlessly through our GitHub repository, enabling effective remote collaboration and version control.
-
 ---
 
 ## 📅 Planned Features (and Achievements)
