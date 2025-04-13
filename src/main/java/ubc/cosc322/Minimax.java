@@ -1,6 +1,6 @@
 /*
- * Contains the Minimax algorithm with Alpha-Beta pruning used in TeamPlayer.java.
- * Used to return the best move for the player.
+ * Implements the Minimax algorithm with Alpha-Beta pruning and transposition table support.
+ * Used by TeamPlayer.java to compute the best move under time and depth constraints.
  */
 package ubc.cosc322;
 
@@ -22,161 +22,147 @@ public class Minimax {
         this.transpositionTable = new HashMap<>();
     }
 
-    public Minimax() { //overload constructor for old minimax without memoization.
-        
-    }
+    // Fallback constructor for non-memoized Minimax (unused in final version)
+    public Minimax() {}
 
-    //Alpha-Beta pruning added to minimax algorithm alongside memoization and iterative deepening.
+    /**
+     * Executes Minimax with Alpha-Beta pruning and transposition table memoization.
+     */
     public List<Object> execAlphaBetaMinimax(Board board, int depth, boolean isMax, int playerId, int alpha, int beta, Instant endTime) {
-        int opponantId = playerId == 1 ? 2:1;
+        int opponantId = (playerId == 1) ? 2 : 1;
         int bestMove;
         List<Object> bestResult = new ArrayList<>();
         Map<String, ArrayList<Integer>> bestMoveAction = null;
 
-        if(depth == 0 || board.isGameOver() || Instant.now().isAfter(endTime)) { //if time limit exceeded, gamne is over, or depth is 0, return utility.
+        // Base case: timeout, game over, or depth limit reached
+        if (depth == 0 || board.isGameOver() || Instant.now().isAfter(endTime)) {
             List<Object> result = new ArrayList<>();
-            result.add(board.getUtility(playerId)); //base case only has a utility. No move.
+            result.add(board.getUtility(playerId));
             return result;
         }
 
         long boardHash = hash.computeBoardHash(board);
-        if(transpositionTable.containsKey(boardHash)) {
+        if (transpositionTable.containsKey(boardHash)) {
             bestResult = transpositionTable.get(boardHash);
             tableUsed++;
-            // System.out.println("FOUND HASH " + ++tableUsed);
         }
 
-
-        if(isMax) { //MAXIMIZER (playerId)
+        if (isMax) {
             bestMove = Integer.MIN_VALUE;
             ActionFactory af = new ActionFactory();
             List<Map<String, ArrayList<Integer>>> moves = af.getActions(playerId, board);
-           
-            for (Map<String, ArrayList<Integer>> move : moves) { //for each child of node, recursive call till terminal
-                Board testMove = new Board(board.getGameboard()); //make copy of board and simulate move
+
+            for (Map<String, ArrayList<Integer>> move : moves) {
+                Board testMove = new Board(board.getGameboard());
                 testMove.updateGameboard(move, playerId);
-                
+
                 List<Object> res = execAlphaBetaMinimax(testMove, depth - 1, false, playerId, alpha, beta, endTime);
-                int value = (int) res.get(0); //get utility from the returned recursive call
-               
-                if(value > bestMove) { //instead of just taking the max we check the values and store value and move.
+                int value = (int) res.get(0);
+
+                if (value > bestMove) {
                     bestMove = value;
                     bestMoveAction = move;
                 }
 
                 alpha = Math.max(alpha, bestMove);
-
-                if(beta <= alpha) {
+                if (beta <= alpha) {
                     branchesPruned++;
-                    break; //prune branches.
+                    break;
                 }
-
-                
             }
-            
-        } else { //MINIMIZER (opponantId)
+
+        } else { // Minimizer
             bestMove = Integer.MAX_VALUE;
             ActionFactory af = new ActionFactory();
             List<Map<String, ArrayList<Integer>>> moves = af.getActions(opponantId, board);
 
-            for (Map<String, ArrayList<Integer>> move : moves) { //for each child of node, recursive call till terminal
-                Board testMove = new Board(board.getGameboard()); //make copy of board and simulate move
+            for (Map<String, ArrayList<Integer>> move : moves) {
+                Board testMove = new Board(board.getGameboard());
                 testMove.updateGameboard(move, opponantId);
-              
+
                 List<Object> res = execAlphaBetaMinimax(testMove, depth - 1, true, playerId, alpha, beta, endTime);
-                int value = (int) res.get(0); //get utility from the returned recursive call
-               
-                if(value < bestMove) { //instead of just taking the min we check the value and store the value and move.
-                   bestMove = value;
-                   bestMoveAction = move;
+                int value = (int) res.get(0);
+
+                if (value < bestMove) {
+                    bestMove = value;
+                    bestMoveAction = move;
                 }
 
                 beta = Math.min(beta, bestMove);
-
-                if(beta <= alpha) {
+                if (beta <= alpha) {
                     branchesPruned++;
-                    break; //prune branch
+                    break;
                 }
             }
         }
 
-
-        //addd best value and move to return.
         bestResult.add(bestMove);
         bestResult.add(bestMoveAction);
-
-        //add move to table (memoization)
-        transpositionTable.put(boardHash, bestResult);
-
+        transpositionTable.put(boardHash, bestResult); // Memoize result
         return bestResult;
-        // return bestMove;
     }
 
     /*
-    //This is basic minimax algorithm. It is not used in the final version of the player, but is kept for reference.
-    //normal node returns will look like List<Map<String, ArrayList<Integer>>>
-    //terminal node returns will only be List<Object> of arraylist with just the utility result.
+     * Legacy Minimax without alpha-beta or memoization. Not used in final AI.
+     * Kept for reference.
+     */
+    /*
     public List<Object> execMinimax(Board board, int depth, boolean isMax, int playerId) {
-        int opponantId = playerId == 1 ? 2:1;
+        int opponantId = playerId == 1 ? 2 : 1;
 
-        if(depth == 0 || board.isGameOver()) {
+        if (depth == 0 || board.isGameOver()) {
             List<Object> result = new ArrayList<>();
-            result.add(board.getUtility(playerId)); //base case only has a utility. No move
+            result.add(board.getUtility(playerId));
             return result;
         }
 
         int bestMove;
         List<Object> bestResult = new ArrayList<>();
         Map<String, ArrayList<Integer>> bestMoveAction = null;
-        
-        if(isMax) { //MAXIMIZER (playerId)
+
+        if (isMax) {
             bestMove = Integer.MIN_VALUE;
-            
             ActionFactory af = new ActionFactory();
             List<Map<String, ArrayList<Integer>>> moves = af.getActions(playerId, board);
-            for (Map<String, ArrayList<Integer>> move : moves) { //for every child node
-                Board testMove = new Board(board.getGameboard()); //make copy of board and simulate move
+
+            for (Map<String, ArrayList<Integer>> move : moves) {
+                Board testMove = new Board(board.getGameboard());
                 testMove.updateGameboard(move, playerId);
-                
-                List<Object> res = execMinimax(testMove, depth - 1, !isMax, playerId);
+
+                List<Object> res = execMinimax(testMove, depth - 1, false, playerId);
                 int value = (int) res.get(0);
-                
-                // bestMove = Math.max(value, bestMove);
-                if(value > bestMove) { //instead of just taking the max we check the values and store value and move.
+
+                if (value > bestMove) {
                     bestMove = value;
                     bestMoveAction = move;
                 }
             }
 
-        } else { //MINIMIZER (opponantId)
+        } else {
             bestMove = Integer.MAX_VALUE;
-            
             ActionFactory af = new ActionFactory();
             List<Map<String, ArrayList<Integer>>> moves = af.getActions(opponantId, board);
-            for (Map<String, ArrayList<Integer>> move : moves) { //for every child node
-                Board testMove = new Board(board.getGameboard()); //make copy of board and simulate move
+
+            for (Map<String, ArrayList<Integer>> move : moves) {
+                Board testMove = new Board(board.getGameboard());
                 testMove.updateGameboard(move, opponantId);
-              
-                List<Object> res = execMinimax(testMove, depth - 1, !isMax, playerId);
+
+                List<Object> res = execMinimax(testMove, depth - 1, true, playerId);
                 int value = (int) res.get(0);
-                
-                
-                // bestMove = Math.min(value, bestMove);
-                if(value < bestMove) { //instead of just taking the min we check the value and store the value and move.
-                   bestMove = value;
-                   bestMoveAction = move;
+
+                if (value < bestMove) {
+                    bestMove = value;
+                    bestMoveAction = move;
                 }
             }
         }
-        
-        //addd best value and move to return.
+
         bestResult.add(bestMove);
         bestResult.add(bestMoveAction);
-
         return bestResult;
     }
     */
- 
+
     public int getTableUsed() {
         return this.tableUsed;
     }

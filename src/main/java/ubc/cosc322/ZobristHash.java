@@ -2,33 +2,39 @@ package ubc.cosc322;
 
 import java.util.Random;
 
+/**
+ * Implements Zobrist hashing for fast board state comparison and memoization.
+ */
 public class ZobristHash {
-    
-    public long[][] zobristTable; //we use long since it is 64bit as zobrist uses
 
+    public long[][] zobristTable; // 64-bit values indexed by [piece][position]
+
+    /**
+     * Initializes the Zobrist table with random 64-bit values for each piece at each board position.
+     */
     public ZobristHash(Board board) {
         Random rand = new Random();
         int boardSize = board.getGameboard().size();
-        zobristTable = new long[4][boardSize]; //4 levels for each possible value, 0-3 for player number, arrow shot, or blank
+        zobristTable = new long[4][boardSize]; // 0: empty, 1–2: players, 3: arrow
 
-        for(int i = 0; i < 4; i++) { //loop through the 4 lvls
-            for(int position = 11; position < boardSize; position++) { //start at 11 to skip padded row. @TODO: remove check of padded column.
-                zobristTable[i][position] = rand.nextLong(); //fill the table with random hashes.
+        for (int i = 0; i < 4; i++) {
+            for (int position = 11; position < boardSize; position++) {
+                zobristTable[i][position] = rand.nextLong();
             }
         }
-
-
     }
 
+    /**
+     * Computes the hash value of a given board by XOR-ing all piece-position combinations.
+     */
     public long computeBoardHash(Board board) {
         long hash = 0;
 
-        for(int idx = 0; idx < board.getGameboard().size(); idx++) { //loop through whole gameboard @TODO: Remove loop through padded cells.
+        for (int idx = 0; idx < board.getGameboard().size(); idx++) {
             int piece = board.getBoardPosition(idx);
-            hash ^= zobristTable[piece][idx]; //enter the hash value into the table by xor-ing.
+            hash ^= zobristTable[piece][idx];
         }
-        return hash;
-    }  
 
-    
+        return hash;
+    }
 }
