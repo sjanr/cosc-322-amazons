@@ -33,11 +33,16 @@ Our AI placed **3rd out of 22 teams** in the UBCO COSC 322 Game of Amazons Tourn
 
 ## 📈 Development Summary
 
-We began the project by completing warm-up demos and studying the SmartFox game server's API. After experimenting with the provided HumanPlayer class, we created our own external player object capable of maintaining an internal game board and communicating with the server.
+📈 Development Summary
+We began the project by completing warm-up demos and reviewing the SmartFox game server’s API. After experimenting with the provided HumanPlayer class, we developed a custom player that maintains an internal game board, validates actions, and communicates effectively with the server. This setup allowed us to simulate moves and apply game logic independently of the server's visual interface.
 
-Alongside implementation, we studied a variety of research papers and thesis work on heuristic-based search, which inspired our custom territory evaluation using Voronoi diagrams. These heuristics became key to our AI’s strategic decision-making during matches.
+To generate all legal queen and arrow combinations, we implemented an Action Factory capable of dynamically exploring every direction on the board. For rule enforcement, we developed robust move validation logic that checks all aspects of gameplay legality.
 
-Our development was briefly stalled due to network access issues over reading week. Once we set up the UBC Okanagan VPN, we were able to resume collaboration remotely via our shared GitHub repository.
+For decision-making, we implemented the Minimax algorithm with Alpha-Beta pruning, supported by iterative deepening to manage branching complexity and enforce time constraints. Our utility function is based on Voronoi-based territory evaluation, which estimates influence over the board based on queen proximity — an approach inspired by several AI research papers.
+
+To improve efficiency, we integrated Zobrist hashing to compute unique board states quickly and used a transposition table for memoization, significantly reducing redundant evaluations during search.
+
+Our development briefly stalled due to remote connectivity issues over reading week. After setting up the UBC Okanagan VPN, we were able to resume work seamlessly through our GitHub repository, enabling effective remote collaboration and version control.
 
 ---
 
